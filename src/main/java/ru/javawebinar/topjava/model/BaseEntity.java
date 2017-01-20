@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 /**
@@ -11,9 +13,11 @@ import javax.persistence.*;
 public class BaseEntity {
     public static final int START_SEQ = 100000;
 
+
+    //@SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)//, generator = "global_seq")
     @Id
-    @SequenceGenerator(name = "global_seq", sequenceName = "global_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", columnDefinition = "INT(10) unsigned", nullable = false)
     protected Integer id;
 
     public BaseEntity() {

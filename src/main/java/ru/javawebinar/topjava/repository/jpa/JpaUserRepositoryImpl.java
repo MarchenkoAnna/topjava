@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
@@ -33,11 +34,15 @@ public class JpaUserRepositoryImpl implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        if (user.isNew()) {
-            em.persist(user);
-            return user;
-        } else {
-            return em.merge(user);
+        try {
+            if (user.isNew()) {
+                em.persist(user);
+                return user;
+            } else {
+                return em.merge(user);
+            }
+        }catch (PersistenceException e) {
+            return null;
         }
     }
 
