@@ -1,13 +1,16 @@
 package ru.javawebinar.topjava.repository.jpa;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 /**
@@ -17,6 +20,9 @@ import java.util.List;
 @Repository
 @Transactional(readOnly = true)
 public class JpaUserRepositoryImpl implements UserRepository {
+
+    @Autowired
+    MealRepository mealRepository;
 
 /*
     @Autowired
@@ -33,11 +39,15 @@ public class JpaUserRepositoryImpl implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        if (user.isNew()) {
-            em.persist(user);
-            return user;
-        } else {
-            return em.merge(user);
+        try {
+            if (user.isNew()) {
+                em.persist(user);
+                return user;
+            } else {
+                return em.merge(user);
+            }
+        }catch (PersistenceException e) {
+            return null;
         }
     }
 
@@ -68,5 +78,14 @@ public class JpaUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         return em.createNamedQuery(User.ALL_SORTED, User.class).getResultList();
+    }
+
+
+    @Override
+    public User getWithMeals(Integer id){
+        User user =  get (id);
+        user.setMeals(mealRepository.getAll(id));
+        return user;
+
     }
 }

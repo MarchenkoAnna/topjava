@@ -28,4 +28,8 @@ public interface MealService {
     Meal update(Meal meal, int userId) throws NotFoundException;
 
     Meal save(Meal meal, int userId);
+
+    void evictCache();
+
+    Meal getWithUser(Integer mealId, Integer userId);
 }

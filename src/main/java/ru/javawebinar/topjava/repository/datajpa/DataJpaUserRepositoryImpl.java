@@ -16,9 +16,13 @@ import java.util.List;
 @Repository
 public class DataJpaUserRepositoryImpl implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = new Sort("name", "email");
+    private static final Sort SORT_DATA_TIME = new Sort(Sort.Direction.DESC, "dateTime");
 
     @Autowired
     private CrudUserRepository crudRepository;
+
+    @Autowired
+    private CrudMealRepository crudMealRepository;
 
     @Override
     public User save(User user) {
@@ -43,5 +47,13 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         return crudRepository.findAll(SORT_NAME_EMAIL);
+    }
+
+    @Override
+    public User getWithMeals(Integer id){
+        User user =  get (id);
+        user.setMeals(crudMealRepository.findAll(id, SORT_DATA_TIME));
+        return user;
+
     }
 }
