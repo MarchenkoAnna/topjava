@@ -1,7 +1,8 @@
 DELETE FROM user_roles;
 DELETE FROM meals;
 DELETE FROM users;
-ALTER SEQUENCE global_seq RESTART WITH 100000;
+ALTER TABLE users AUTO_INCREMENT = 100000;
+ALTER TABLE meals AUTO_INCREMENT = 100002;
 
 INSERT INTO users (name, email, password)
 VALUES ('User', 'user@yandex.ru', 'password');

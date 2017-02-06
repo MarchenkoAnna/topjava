@@ -25,7 +25,7 @@
         <slf4j.version>1.7.21</slf4j.version>
 
         <!--DB-->
-        <postgresql.version>9.4.1212</postgresql.version>
+        <postgresql.version>5.1.6</postgresql.version>
         <!--    Tests  -->
         <junit.version>4.12</junit.version>
 
@@ -267,8 +267,8 @@
             <id>postgres</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.postgresql</groupId>
-                    <artifactId>postgresql</artifactId>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
                     <version>${postgresql.version}</version>
                 </dependency>
                 <dependency>

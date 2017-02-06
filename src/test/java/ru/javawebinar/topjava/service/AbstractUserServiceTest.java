@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.JpaUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.Collection;

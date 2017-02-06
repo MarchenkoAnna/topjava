@@ -1,5 +1,8 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
@@ -46,16 +49,6 @@ public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
     }
 
     @Repository
-    @Profile(Profiles.POSTGRES)
-    public static class Java8JdbcMealRepositoryImpl extends JdbcMealRepositoryImpl<LocalDateTime> {
-        @Override
-        protected LocalDateTime toDbDateTime(LocalDateTime ldt) {
-            return ldt;
-        }
-    }
-
-    @Repository
-    @Profile(Profiles.HSQLDB)
     public static class TimestampJdbcMealRepositoryImpl extends JdbcMealRepositoryImpl<Timestamp> {
 
         @Override
@@ -66,12 +59,29 @@ public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
+
+//        String description = meal.getDescription().trim();
+//        LocalDateTime dateTime = meal.getDateTime();
+//        Integer calories = meal.getCalories();
+//
+//        if (description.isEmpty()||dateTime ==null || calories < 10 ||calories > 5000){
+//            return null;
+//       }
+        boolean isEmpty = meal.getDescription().trim().isEmpty();
+
+        boolean isNullDesc = meal.getDescription() == null;
+
+        boolean isNullDT = meal.getDateTime() == null;
+
+        boolean isBetween = meal.getCalories()>=10&&meal.getCalories()<=5000;
+
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
-                .addValue("description", meal.getDescription())
-                .addValue("calories", meal.getCalories())
-                .addValue("date_time", toDbDateTime(meal.getDateTime()))
+                .addValue("description", isEmpty || isNullDesc ? null : meal.getDescription())
+                .addValue("calories", isBetween? meal.getCalories() : null)
+                .addValue("date_time", isNullDT ? null : toDbDateTime(meal.getDateTime()))
                 .addValue("user_id", userId);
+
 
         if (meal.isNew()) {
             Number newId = insertMeal.executeAndReturnKey(map);

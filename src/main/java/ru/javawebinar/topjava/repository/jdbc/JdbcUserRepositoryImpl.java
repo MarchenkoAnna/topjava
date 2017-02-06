@@ -41,18 +41,25 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
+
+        boolean isEmptyName = (user.getName().trim().isEmpty());
+        boolean isEmptyEmail = (user.getEmail().trim().isEmpty());
+        boolean isEmptyPass = (user.getPassword().trim().isEmpty());
+        boolean isBetween = user.getCaloriesPerDay()>=10&&user.getCaloriesPerDay()<=10000;
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", user.getId())
-                .addValue("name", user.getName())
-                .addValue("email", user.getEmail())
-                .addValue("password", user.getPassword())
+                .addValue("name", isEmptyName? null:user.getName())
+                .addValue("email", isEmptyEmail? null:user.getEmail())
+                .addValue("password", isEmptyPass? null:user.getPassword())
                 .addValue("registered", user.getRegistered())
                 .addValue("enabled", user.isEnabled())
-                .addValue("caloriesPerDay", user.getCaloriesPerDay());
+                .addValue("caloriesPerDay", isBetween?user.getCaloriesPerDay():null);
+//                .addValue("roles", user.getRoles());
 
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(map);
             user.setId(newKey.intValue());
+
         } else {
             namedParameterJdbcTemplate.update(
                     "UPDATE users SET name=:name, email=:email, password=:password, " +

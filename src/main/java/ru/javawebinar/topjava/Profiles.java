@@ -14,7 +14,7 @@ public class Profiles {
 
     public static String getActiveDbProfile() {
         try {
-            Class.forName("org.postgresql.Driver", true, ClassUtils.getDefaultClassLoader());
+            Class.forName("com.mysql.jdbc.Driver", true, ClassUtils.getDefaultClassLoader());
             return Profiles.POSTGRES;
         } catch (ClassNotFoundException ex) {
             try {
